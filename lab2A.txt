@@ -1,0 +1,164 @@
+
+main(){
+    int quit_num= -1;
+    while quit_num !=0{
+    get user input as line_input;
+    tokenlized the line_input and put it in put tokenlized_array;
+    command =tokenlized_array[0];
+    int internal=no;
+    if(read_first_command(tokenlized_array,internal)==-1){
+        prtint "illeagl command"
+        countinue;
+    }
+
+    input_redirect=no;
+    input_redirect_file_name;
+    if(check_redirect_input(tokenlized_array,input_redirect,input_redirect_file_name)==-1){
+        prtint "illeagl command"
+        countinue;
+    }
+
+    output_redirect=no;
+    output_redirect_filename;
+    if(check_redirect_output(tokenlized_array,output_redirect,output_redirect_filename)==-1){
+        prtint "illeagl command"
+        countinue;
+    }
+    
+    output_redirect_pipe=no;
+    output_redirect_pipe_command;
+    if(check_pipe(tokenlized_array,output_redirect_pipe,output_redirect_pipe_command)==-1){
+        prtint "illeagl command"
+        countinue;
+    }
+
+    check_back=no;
+    if(check_back_func(tokenlized_array,check_back)==-1){
+        prtint "illeagl command"
+        countinue;
+    }
+
+
+    int pid = fork();
+    if(pid==0){
+        if(internal==yes){
+        if(command==cd){
+            command_cd(tokenlized_array);
+        }
+        if(command==dir){
+            command_dir(tokenlized_array,output_redirect,output_redirect_filename,input_redirect,input_redirect_file_name)
+        }
+        if(command==env){
+            command_env(tokenlized_array,output_redirect,output_redi
+        }
+        if(command==clr){
+            prtint("\033[H\033[2J");
+        }
+        if(command==pause){
+            while(getchar()!='\n'){
+
+            }
+        }
+        if(command==echo){
+            print tokenlized_array;
+        }
+        if(command==quit){
+            quit_num=0;
+        }
+        }
+        else{
+            extarnal_command_excute(tokenlized_array);
+        } 
+    }else{
+        if(check_back!=yes){
+            wait(pid);
+        }
+    }
+}
+read_first_command(tokenlized_array,internal){
+    read the first element of tokenlized_array make sure it is legal command;
+    which is one of the internal command or extarnal command;
+    if pass the check 
+        if it is internal command
+            internal=yes;
+        return0;
+    else 
+        return -1;
+}
+check_redirect_input(tokenlized_array,input_redirect,input_redirect_file_name){
+    if < exist in tokenlized_array{ 
+        if exist argument after <
+            input_redirect = yes;
+            input_redirect_file_name = argument after <;
+            return0
+    }
+    return -1;
+
+}
+check_redirect_output(tokenlized_array,output_redirect,output_redirect_filename){
+    if > or >> exit in tokenlized_array{
+        if after > or >> exit argument
+            output_redirect= > or >>
+            output_redirect_filename = argument after > or >>
+            return 0;
+    }
+    return -1;
+}
+check_pipe(tokenlized_array,output_redirect_pipe,output_redirect_pipe_command){
+    if | exist in tokenlized_array{
+        if | exist a command with correct grammer
+            output_redirect_pipe=yes
+            output_redirect_pipe_command= command that have correct grammer;
+            return 0;
+    }
+    return -1;
+}
+check_back_func(tokenlized_array,check_back){
+    if & exist and at end of tokenlized_array{
+        check_back=yes;
+        return0;
+    }
+    return -1;
+}
+command_cd(tokenlized_array){
+    if tokenlized_array[1] is valid argument
+        chdir(tokenlized_array[1]);
+}
+command_dir(tokenlized_array,output_redirect,output_redirect_filename,input_redirect,input_redirect_file_name){
+    if no valid argument after command && input_redirect==no
+        while((output=readdir(current_dir))!=null){
+            if(output_redirect==>)
+                file_write_without_overwirte output;
+            if(output_redirect==>>)
+                file_write_with_overwirte output;
+            prtint output;
+        }
+    else if vaild argument after command && input_redirect == no
+        while((output=readdir(argument_after_command))!=null){
+            if(output_redirect==>)
+                file_write_without_overwirte output;
+            if(output_redirect==>>)
+                file_write_with_overwirte output;
+            prtint output;
+        }
+    else no valid argument after command && input_redirect== yes
+        while((output=readdir(input_redirect_file_name))!=null){
+            if(output_redirect==>)
+                file_write_without_overwirte output;
+            if(output_redirect==>>)
+                file_write_with_overwirte output;
+            prtint output;
+        }
+}
+command_env(tokenlized_array,output_redirect,output_redirect_filename){
+    if tokenlized_array[1] is vaild argument
+        output=getenv(argument);
+        if(output_redirect==>)
+                file_write_without_overwirte output;
+            if(output_redirect==>>)
+                file_write_with_overwirte output;
+            prtint output;
+}
+extarnal_command_excute(tokenlized_array){
+    using exec(); to pass all argument to the out side shell;
+}
